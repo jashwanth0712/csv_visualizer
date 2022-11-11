@@ -133,5 +133,4 @@ app.callback(Output("y-variable", "options"), [Input("x-variable", "value")])(
 
 if __name__ == "__main__":
     app.run_server(debug=True, port=8888)
-url = "localhost:8888"
-webbrowser.open_new_tab(url)
+    print("remaining ran")
