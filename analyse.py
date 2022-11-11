@@ -1,8 +1,3 @@
-"""
-Dash port of Shiny iris k-means example:
-
-https://shiny.rstudio.com/gallery/kmeans-example.html
-"""
 import dash
 import webbrowser
 import sys
@@ -12,9 +7,11 @@ import plotly.graph_objs as go
 from dash import Input, Output, dcc, html
 from sklearn import datasets
 from sklearn.cluster import KMeans
-
-iris_raw = datasets.load_iris()
-iris = pd.DataFrame(iris_raw["data"], columns=iris_raw["feature_names"])
+filename = sys.argv[-1]
+print("Recieved ",filename)
+iris=pd.read_csv(filename)
+# iris_raw = datasets.load_iris()
+# iris = pd.DataFrame(iris_raw["data"], columns=iris_raw["feature_names"])
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 

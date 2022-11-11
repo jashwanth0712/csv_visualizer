@@ -1,1 +1,1 @@
-assets/images/
+'python analyse.py '+filepath

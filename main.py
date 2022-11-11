@@ -13,24 +13,40 @@ def openFile():
     filepath = filedialog.askopenfilename(title="Select the CSV file",
                                           filetypes= (("text files","*.csv"),
                                           ("all files","*.*")))
-    file = open(filepath,'r')
-    
-    button.config(image =img2,bd=0,bg='#000000',activebackground="#000000")
-    df = pd.read_csv(filepath)
-    # df.info()
-    # print("-------------------------------------")
-    # print(file.read())
-    print("---------lets shift to another file------------")
+    print("input file path is : ",filepath)
+    if(filepath==''):
+        return
+    dialouge_lable['text']='Analysing  '+filepath.split("/")[-1]
+    button['image']=img2
     s='python analyse.py '+filepath
+    #Popen opens analyse.py by giving the file path as an input argument 
     Popen(s)
-    time.sleep(10)
+    loading_lable=Label(window,text='''LOADING ...''',background='#000000',foreground='#ffffff')
+    loading_lable.pack(pady=5)
+    window.update()
+    t=time.localtime()
+    start = time.strftime("%S", t)
+    start_m = time.strftime("%M", t)
+    start_h = time.strftime("%H", t)
+    start=int(start)+int(start_m)*60+int(start_h)*3600
+    while(1):
+        current_s=time.strftime("%S", time.localtime())
+        current_m=time.strftime("%M", time.localtime())
+        current_h=time.strftime("%H", time.localtime())
+        current=int(current_s)+int(current_m)*60+int(current_h)*3600
+        delta=int(current)-int(start)
+        loading_lable['text']=str(10-delta)+' sec remaining...'
+        window.update()
+        
+        if(delta>=10):
+            break
    
     print("next ran")
     url = "http://127.0.0.1:8888/"
     webbrowser.open_new_tab(url)
-    file.close()
+    window.destroy()
 
-
+print("main.py started")
 window = Tk()
 img1=PhotoImage(file='./assets/images/open_csv_button.png')
 img2=PhotoImage(file='./assets/images/opened.png')
@@ -50,6 +66,7 @@ dialouge_lable.pack(pady=5)
 
 button = Button(window,command=openFile, image =img1,bd=0,bg='#000000',activebackground="#000000")
 button.pack(pady=20)
+print("home page opened")
 window.mainloop()
 
 
