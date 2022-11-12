@@ -12,7 +12,7 @@ print("Recieved ",filename)
 iris=pd.read_csv(filename)
 # iris_raw = datasets.load_iris()
 # iris = pd.DataFrame(iris_raw["data"], columns=iris_raw["feature_names"])
-
+#ds
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 controls = dbc.Card(
