@@ -7,8 +7,8 @@ import numpy as np
 from subprocess import *
 import time
 import sys
-import os 
-   
+
+  
 def openFile():
     filepath = filedialog.askopenfilename(title="Select the CSV file",
                                           filetypes= (("text files","*.csv"),
@@ -18,33 +18,32 @@ def openFile():
         return
     dialouge_lable['text']='Analysing  '+filepath.split("/")[-1]
     button['image']=img2
-    s='python analyse.py '+filepath
+    s='python kmean.py '+filepath
     #Popen opens analyse.py by giving the file path as an input argument 
     Popen(s)
     loading_lable=Label(window,text='''LOADING ...''',background='#000000',foreground='#ffffff')
     loading_lable.pack(pady=5)
     window.update()
-    t=time.localtime()
-    start = time.strftime("%S", t)
-    start_m = time.strftime("%M", t)
-    start_h = time.strftime("%H", t)
-    start=int(start)+int(start_m)*60+int(start_h)*3600
-    while(1):
-        current_s=time.strftime("%S", time.localtime())
-        current_m=time.strftime("%M", time.localtime())
-        current_h=time.strftime("%H", time.localtime())
-        current=int(current_s)+int(current_m)*60+int(current_h)*3600
-        delta=int(current)-int(start)
-        loading_lable['text']=str(10-delta)+' sec remaining...'
-        window.update()
-        
-        if(delta>=10):
-            break
+    # t=time.localtime()
+    # start = time.strftime("%S", t)
+    # start_m = time.strftime("%M", t)
+    # start_h = time.strftime("%H", t)
+    # start=int(start)+int(start_m)*60+int(start_h)*3600
+
+    # while(1):
+    #     current_s=time.strftime("%S", time.localtime())
+    #     current_m=time.strftime("%M", time.localtime())
+    #     current_h=time.strftime("%H", time.localtime())
+    #     current=int(current_s)+int(current_m)*60+int(current_h)*3600
+    #     delta=int(current)-int(start)
+    #     loading_lable['text']=str(10-delta)+' sec remaining...'
+    #     window.update()
+    #     if(delta>=10):
+    #         break
    
-    print("next ran")
-    url = "http://127.0.0.1:8888/"
-    webbrowser.open_new_tab(url)
-    window.destroy()
+    # print("next ran")
+    # # webbrowser.open_new_tab(url)
+    # window.destroy()
 
 print("main.py started")
 window = Tk()

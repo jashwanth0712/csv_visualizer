@@ -1,5 +1,7 @@
 import dash
 import webbrowser
+import os 
+from threading import Timer
 import sys
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -9,9 +11,11 @@ from sklearn import datasets
 from sklearn.cluster import KMeans
 filename = sys.argv[-1]
 print("Recieved ",filename)
-iris=pd.read_csv(filename)
-# iris_raw = datasets.load_iris()
-# iris = pd.DataFrame(iris_raw["data"], columns=iris_raw["feature_names"])
+data=pd.read_csv(filename)
+numeric_cols = data.select_dtypes(exclude='number')
+data.drop(numeric_cols, axis=1, inplace=True)
+# data_raw = datasets.load_data()
+# data = pd.DataFrame(data_raw["data"], columns=data_raw["feature_names"])
 #ds
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -23,9 +27,9 @@ controls = dbc.Card(
                 dcc.Dropdown(
                     id="x-variable",
                     options=[
-                        {"label": col, "value": col} for col in iris.columns
+                        {"label": col, "value": col} for col in data.columns
                     ],
-                    value="sepal length (cm)",
+                    value=data.columns[0],
                 ),
             ]
         ),
@@ -35,9 +39,9 @@ controls = dbc.Card(
                 dcc.Dropdown(
                     id="y-variable",
                     options=[
-                        {"label": col, "value": col} for col in iris.columns
+                        {"label": col, "value": col} for col in data.columns
                     ],
-                    value="sepal width (cm)",
+                    value=data.columns[1],
                 ),
             ]
         ),
@@ -53,7 +57,7 @@ controls = dbc.Card(
 
 app.layout = dbc.Container(
     [
-        html.H1("Iris k-means clustering"),
+        html.H1("k-means clustering of "+ filename.split("/")[-1]),
         html.Hr(),
         dbc.Row(
             [
@@ -78,13 +82,13 @@ app.layout = dbc.Container(
 def make_graph(x, y, n_clusters):
     # minimal input validation, make sure there's at least one cluster
     km = KMeans(n_clusters=max(n_clusters, 1))
-    df = iris.loc[:, [x, y]]
+    df = data.loc[:, [x, y]]
     km.fit(df.values)
     df["cluster"] = km.labels_
 
     centers = km.cluster_centers_
 
-    data = [
+    table = [
         go.Scatter(
             x=df.loc[df.cluster == c, x],
             y=df.loc[df.cluster == c, y],
@@ -95,7 +99,7 @@ def make_graph(x, y, n_clusters):
         for c in range(n_clusters)
     ]
 
-    data.append(
+    table.append(
         go.Scatter(
             x=centers[:, 0],
             y=centers[:, 1],
@@ -107,7 +111,7 @@ def make_graph(x, y, n_clusters):
 
     layout = {"xaxis": {"title": x}, "yaxis": {"title": y}}
 
-    return go.Figure(data=data, layout=layout)
+    return go.Figure(data=table, layout=layout)
 
 
 # make sure that x and y values can't be the same variable
@@ -115,7 +119,7 @@ def filter_options(v):
     """Disable option v"""
     return [
         {"label": col, "value": col, "disabled": col == v}
-        for col in iris.columns
+        for col in data.columns
     ]
 
 
@@ -127,7 +131,11 @@ app.callback(Output("y-variable", "options"), [Input("x-variable", "value")])(
     filter_options
 )
 
+def open_browser():
+    if not os.environ.get("WERKZEUG_RUN_MAIN"):
+        webbrowser.open_new('http://127.0.0.1:8888/')
 
 if __name__ == "__main__":
+    Timer(1, open_browser).start()
     app.run_server(debug=True, port=8888)
     print("remaining ran")
