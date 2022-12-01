@@ -7,7 +7,7 @@ import numpy as np
 from subprocess import *
 import time
 import sys
-
+#open file is a finction that prompts the user to select the file and sends it as an argument to the analyse.py file
   
 def openFile():
     filepath = filedialog.askopenfilename(title="Select the CSV file",
